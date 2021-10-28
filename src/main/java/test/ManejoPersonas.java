@@ -1,41 +1,48 @@
 package test;
 
+import datos.Conexion;
 import datos.PersonaJDBC;
 import domain.Persona;
+import java.sql.*;
 import java.util.List;
 
 public class ManejoPersonas {
-    
+
     public static void main(String[] args) {
-        
-        PersonaJDBC personaJDBC = new  PersonaJDBC();
-        List<Persona> personas = personaJDBC.select();
-        
-        for(Persona persona : personas) {
-            System.out.println("persona:" + persona);
+
+        Connection conexion = null;
+        try {
+            conexion = Conexion.getConnection();
+            if(conexion.getAutoCommit())
+                conexion.setAutoCommit(false);
+            
+            PersonaJDBC personaJDBC = new PersonaJDBC(conexion);
+            
+            Persona cambioPersona = new Persona();
+            cambioPersona.setId_persona(2);
+            cambioPersona.setNombre("Fernanda Abigail");
+            cambioPersona.setApellido("Vazquez");
+            cambioPersona.setEmail("fvazquez@gmail.com");
+            cambioPersona.setTelefono("3366443355");
+            personaJDBC.update(cambioPersona);
+            
+            Persona nuevaPersona = new Persona();
+            nuevaPersona.setNombre("Adrian");
+            nuevaPersona.setApellido("Hernadez");
+            nuevaPersona.setEmail("ahernandez@gmail.com");
+            nuevaPersona.setTelefono("1155338877");
+            personaJDBC.insert(nuevaPersona);
+            
+            conexion.commit(); 
+            System.out.println("Se ha hecjo commit");
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+            System.out.println("Entramos al rollback");
+            try {
+                conexion.rollback();
+            } catch (SQLException ex1) {
+                ex1.printStackTrace();
+            }
         }
-        
-        //Prueba insert
-//        Persona persona = new Persona();
-//        persona.setNombre("Maria");
-//        persona.setApellido("Lara");
-//        persona.setEmail("mlara@mail.com");
-//        persona.setTelefono("8877665511");
-        
-//        personaJDBC.insert(persona);
-
-//        Persona persona = new Persona();
-//        persona.setId_persona(3); 
-//        persona.setNombre("Maira");
-//        persona.setApellido("Lara");
-//        persona.setEmail("mlara@mail.com");
-//        persona.setTelefono("8877665511");
-//        
-//        personaJDBC.update(persona);
-
-        Persona persona = new Persona();
-        persona.setId_persona(3);
-        
-        personaJDBC.delete(persona);
-    }    
+    }
 }

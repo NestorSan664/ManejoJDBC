@@ -82,7 +82,7 @@ public class UsuarioJDBC {
             stmt = conn.prepareStatement(SQL_UPDATE);
             stmt.setString(1, usuario.getUsername());
             stmt.setString(2, usuario.getPassword());
-            stmt.setInt(5, usuario.getId_usuario());
+            stmt.setInt(3, usuario.getId_usuario());
             
             row = stmt.executeUpdate();
             System.out.println("Registros actualizados: " + row);
@@ -90,7 +90,10 @@ public class UsuarioJDBC {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+        finally {
+            Conexion.close(stmt);
+            Conexion.close(conn);
+        }
         return row;
     }
     
@@ -108,6 +111,10 @@ public class UsuarioJDBC {
             System.out.println("Registros eliminados: " + row);
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+        finally {
+            Conexion.close(stmt);
+            Conexion.close(conn);
         }
         return row;
     }
