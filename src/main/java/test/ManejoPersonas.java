@@ -1,6 +1,7 @@
 package test;
 
 import datos.Conexion;
+import datos.PersonaDAO;
 import datos.PersonaJDBC;
 import domain.Persona;
 import java.sql.*;
@@ -16,25 +17,15 @@ public class ManejoPersonas {
             if(conexion.getAutoCommit())
                 conexion.setAutoCommit(false);
             
-            PersonaJDBC personaJDBC = new PersonaJDBC(conexion);
+            PersonaDAO personaDAO = new PersonaJDBC(conexion);
             
-            Persona cambioPersona = new Persona();
-            cambioPersona.setId_persona(2);
-            cambioPersona.setNombre("Fernanda Abigail");
-            cambioPersona.setApellido("Vazquez");
-            cambioPersona.setEmail("fvazquez@gmail.com");
-            cambioPersona.setTelefono("3366443355");
-            personaJDBC.update(cambioPersona);
+            List<Persona> personas = personaDAO.select();
             
-            Persona nuevaPersona = new Persona();
-            nuevaPersona.setNombre("Adrian");
-            nuevaPersona.setApellido("Hernadez");
-            nuevaPersona.setEmail("ahernandez@gmail.com");
-            nuevaPersona.setTelefono("1155338877");
-            personaJDBC.insert(nuevaPersona);
-            
-            conexion.commit(); 
-            System.out.println("Se ha hecjo commit");
+            for(Persona persona : personas) {
+                System.out.println("Persona: " + persona);
+            }
+            conexion.commit();
+            System.out.println("Commit");
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
             System.out.println("Entramos al rollback");

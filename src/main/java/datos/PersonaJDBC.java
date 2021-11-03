@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonaJDBC {
+public class PersonaJDBC implements PersonaDAO{
 
     private Connection conexionTransaccional;
 
